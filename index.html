@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Edukids Pintar - Learn & Play</title>
+    <title>Edukids - Learn & Play</title>
     <!-- Tailwind CSS for Cheerful UI -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- Font Awesome for Cute Cartoon Icons -->
@@ -70,7 +70,7 @@
     <main class="flex-grow flex items-center justify-center p-4 w-full relative">
 
         <!-- 1. MAIN MENU SCREEN -->
-        <div id="skrinUtama" class="text-center w-full max-w-xl">
+        <div id="mainScreen" class="text-center w-full max-w-xl">
             <div class="absolute top-10 left-1/4 opacity-30 float-cloud pointer-events-none">
                 <i class="fa-solid fa-cloud text-6xl text-white"></i>
             </div>
@@ -81,7 +81,7 @@
             <div class="space-y-8">
                 <div class="bounce-soft inline-block">
                     <h1 class="text-5xl md:text-6xl font-black text-amber-500 drop-shadow-lg tracking-wide">
-                        🌈 Edukids Pintar
+                        🌈 Edukids
                     </h1>
                     <p class="text-xl font-bold text-sky-600 mt-2">Listen, Learn & Play! 🌟🐾</p>
                 </div>
@@ -92,7 +92,7 @@
                     <i class="fa-solid fa-star"></i>
                 </div>
 
-                <button onclick="tukarSkrin('menuPembelajaran')" class="w-72 h-72 mx-auto bg-emerald-400 hover:bg-emerald-500 text-white rounded-full font-black text-4xl shadow-2xl border-8 border-white flex flex-col items-center justify-center cursor-pointer transition transform active:scale-95 duration-200">
+                <button onclick="changeScreen('learningMenu')" class="w-72 h-72 mx-auto bg-emerald-400 hover:bg-emerald-500 text-white rounded-full font-black text-4xl shadow-2xl border-8 border-white flex flex-col items-center justify-center cursor-pointer transition transform active:scale-95 duration-200">
                     <i class="fa-solid fa-play text-6xl mb-3 drop-shadow"></i>
                     <span>PLAY</span>
                 </button>
@@ -100,53 +100,53 @@
         </div>
 
         <!-- 2. GAME SELECTION MENU -->
-        <div id="menuPembelajaran" class="hidden w-full max-w-4xl mx-auto">
+        <div id="learningMenu" class="hidden w-full max-w-4xl mx-auto">
             <h2 class="text-3xl font-black text-center text-indigo-600 mb-6 drop-shadow-sm">Choose a Fun Game ✨</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                <button onclick="bukaMod('nombor')" class="bg-rose-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                <button onclick="openMode('numbers')" class="bg-rose-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
                     <span class="text-5xl">🔢</span> Numbers
                 </button>
-                <button onclick="bukaMod('huruf')" class="bg-sky-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                <button onclick="openMode('alphabet')" class="bg-sky-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
                     <span class="text-5xl">🔤</span> Alphabet
                 </button>
-                <button onclick="bukaMod('warna')" class="bg-amber-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                <button onclick="openMode('colors')" class="bg-amber-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
                     <span class="text-5xl">🎨</span> Colors
                 </button>
-                <button onclick="bukaMod('bentuk')" class="bg-purple-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                <button onclick="openMode('shapes')" class="bg-purple-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
                     <span class="text-5xl">🔺</span> Shapes
                 </button>
-                <button onclick="bukaMod('haiwan')" class="bg-teal-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                <button onclick="openMode('animals')" class="bg-teal-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
                     <span class="text-5xl">🐶</span> Animals
                 </button>
-                <button onclick="bukaMod('buah')" class="bg-orange-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                <button onclick="openMode('fruits')" class="bg-orange-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
                     <span class="text-5xl">🍎</span> Fruits
                 </button>
-                <button onclick="bukaMod('kenderaan')" class="bg-indigo-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                <button onclick="openMode('vehicles')" class="bg-indigo-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
                     <span class="text-5xl">🚗</span> Vehicles
                 </button>
-                <button onclick="bukaMod('keluarga')" class="bg-pink-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                <button onclick="openMode('family')" class="bg-pink-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
                     <span class="text-5xl">👨‍👩‍👧</span> Family
                 </button>
-                <button onclick="bukaMod('tepuk')" class="bg-lime-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer col-span-2 md:col-span-4">
+                <button onclick="openMode('bubbles')" class="bg-lime-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer col-span-2 md:col-span-4">
                     <span class="text-5xl">👏</span> Pop Bubbles Game
                 </button>
             </div>
         </div>
 
         <!-- PLAY MODAL DISPLAY CONTAINER -->
-        <div id="skrinModPermainan" class="hidden w-full max-w-3xl mx-auto bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-2xl border-4 border-white min-h-[450px] flex flex-col justify-between items-center relative">
-            <div id="kandunganMod" class="w-full flex-grow flex flex-col items-center justify-center text-center"></div>
+        <div id="gameModeScreen" class="hidden w-full max-w-3xl mx-auto bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-2xl border-4 border-white min-h-[450px] flex flex-col justify-between items-center relative">
+            <div id="modeContent" class="w-full flex-grow flex flex-col items-center justify-center text-center"></div>
 
             <!-- Lower Navigation Bar -->
-            <div id="navigasiMod" class="w-full flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
-                <button onclick="kembaliKeMenu()" class="bg-gray-400 text-white font-bold py-3 px-6 rounded-2xl shadow active:scale-95 cursor-pointer">
+            <div id="modeNavigation" class="w-full flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+                <button onclick="backToMenu()" class="bg-gray-400 text-white font-bold py-3 px-6 rounded-2xl shadow active:scale-95 cursor-pointer">
                     <i class="fa-solid fa-home mr-2"></i> Menu
                 </button>
-                <div id="butangSeterusnyaPangil" class="flex gap-2">
-                    <button id="btnKiri" class="bg-indigo-400 text-white font-bold p-4 rounded-2xl shadow active:scale-95 text-xl cursor-pointer">
+                <div id="navButtonsContainer" class="flex gap-2">
+                    <button id="btnLeft" class="bg-indigo-400 text-white font-bold p-4 rounded-2xl shadow active:scale-95 text-xl cursor-pointer">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
-                    <button id="btnKanan" class="bg-indigo-400 text-white font-bold p-4 rounded-2xl shadow active:scale-95 text-xl cursor-pointer">
+                    <button id="btnRight" class="bg-indigo-400 text-white font-bold p-4 rounded-2xl shadow active:scale-95 text-xl cursor-pointer">
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
@@ -154,16 +154,16 @@
         </div>
 
         <!-- 3. PARENTS DASHBOARD -->
-        <div id="modalParents" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div id="parentsModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border-4 border-amber-400 relative">
                 <div id="parentsGate">
                     <h3 class="text-2xl font-black text-amber-600 mb-4 text-center">Parents Zone 🔐</h3>
                     <p class="text-gray-600 text-sm mb-4 text-center">Solve this simple question to enter:</p>
-                    <div class="bg-amber-50 p-4 rounded-2xl text-center font-bold text-xl mb-4 text-gray-700" id="soalanMatematik"></div>
-                    <input type="number" id="jawapanGate" class="w-full border-2 border-amber-300 p-3 rounded-xl text-center text-xl mb-4 font-bold outline-none focus:border-amber-500" placeholder="Your answer">
+                    <div class="bg-amber-50 p-4 rounded-2xl text-center font-bold text-xl mb-4 text-gray-700" id="mathQuestion"></div>
+                    <input type="number" id="gateAnswer" class="w-full border-2 border-amber-300 p-3 rounded-xl text-center text-xl mb-4 font-bold outline-none focus:border-amber-500" placeholder="Your answer">
                     <div class="flex gap-2">
-                        <button onclick="tutupDashboard()" class="w-1/2 bg-gray-400 text-white py-3 rounded-xl font-bold cursor-pointer">Cancel</button>
-                        <button onclick="sahkanParentsGate()" class="w-1/2 bg-amber-500 text-white py-3 rounded-xl font-bold cursor-pointer">Enter</button>
+                        <button onclick="closeDashboard()" class="w-1/2 bg-gray-400 text-white py-3 rounded-xl font-bold cursor-pointer">Cancel</button>
+                        <button onclick="verifyParentsGate()" class="w-1/2 bg-amber-500 text-white py-3 rounded-xl font-bold cursor-pointer">Enter</button>
                     </div>
                 </div>
 
@@ -171,13 +171,13 @@
                     <h3 class="text-2xl font-black text-indigo-600 border-b pb-2">Edukids Performance Report</h3>
                     <div>
                         <p class="font-bold text-gray-500 text-sm uppercase">⏱️ Playtime This Session</p>
-                        <p id="txtMasaBermain" class="text-3xl font-black text-emerald-500">0 minutes 0 seconds</p>
+                        <p id="txtPlaytime" class="text-3xl font-black text-emerald-500">0 minutes 0 seconds</p>
                     </div>
                     <div>
                         <p class="font-bold text-gray-500 text-sm uppercase">📊 Explored Categories</p>
-                        <ul id="listKategori" class="list-disc list-inside mt-1 font-semibold text-gray-700"></ul>
+                        <ul id="categoryList" class="list-disc list-inside mt-1 font-semibold text-gray-700"></ul>
                     </div>
-                    <button onclick="tutupDashboard()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-center cursor-pointer mt-4">Close Report</button>
+                    <button onclick="closeDashboard()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-center cursor-pointer mt-4">Close Report</button>
                 </div>
             </div>
         </div>
@@ -187,13 +187,13 @@
     <!-- FOOTER THEMING CONTROLS -->
     <footer class="p-4 flex justify-between items-center w-full z-40 bg-white/20 backdrop-blur-xs">
         <div class="flex gap-2 bg-white/60 p-2 rounded-2xl shadow-md">
-            <button onclick="tukarTema('rainbow')" class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-300 to-sky-300 border border-white cursor-pointer transform active:scale-95"></button>
-            <button onclick="tukarTema('ocean')" class="w-8 h-8 rounded-full bg-sky-400 border border-white cursor-pointer transform active:scale-95"></button>
-            <button onclick="tukarTema('forest')" class="w-8 h-8 rounded-full bg-emerald-400 border border-white cursor-pointer transform active:scale-95"></button>
-            <button onclick="tukarTema('space')" class="w-8 h-8 rounded-full bg-indigo-950 border border-white cursor-pointer transform active:scale-95"></button>
+            <button onclick="changeTheme('rainbow')" class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-300 to-sky-300 border border-white cursor-pointer transform active:scale-95"></button>
+            <button onclick="changeTheme('ocean')" class="w-8 h-8 rounded-full bg-sky-400 border border-white cursor-pointer transform active:scale-95"></button>
+            <button onclick="changeTheme('forest')" class="w-8 h-8 rounded-full bg-emerald-400 border border-white cursor-pointer transform active:scale-95"></button>
+            <button onclick="changeTheme('space')" class="w-8 h-8 rounded-full bg-indigo-950 border border-white cursor-pointer transform active:scale-95"></button>
         </div>
 
-        <button onclick="bukaDashboard()" class="bg-amber-400 hover:bg-amber-500 text-white font-black py-2 px-4 rounded-2xl shadow border-2 border-white flex items-center gap-2 text-sm cursor-pointer transition transform active:scale-95">
+        <button onclick="openDashboard()" class="bg-amber-400 hover:bg-amber-500 text-white font-black py-2 px-4 rounded-2xl shadow border-2 border-white flex items-center gap-2 text-sm cursor-pointer transition transform active:scale-95">
             <i class="fa-solid fa-user-lock"></i> Parents
         </button>
     </footer>
@@ -219,74 +219,74 @@
         }
 
         // --- PLAY TIME AND TRACKING SYSTEMS ---
-        let masaMula = Date.now();
-        let logAktiviti = {};
-        let targetMatematik = 0;
+        let startTime = Date.now();
+        let activityLog = {};
+        let targetMathAnswer = 0;
 
         setInterval(() => {
-            let bezaMasa = Math.floor((Date.now() - masaMula) / 1000);
-            let minit = Math.floor(bezaMasa / 60);
-            let saat = bezaMasa % 60;
-            document.getElementById('txtMasaBermain').innerText = `${minit} minutes ${saat} seconds`;
+            let timeDiff = Math.floor((Date.now() - startTime) / 1000);
+            let minutes = Math.floor(timeDiff / 60);
+            let seconds = timeDiff % 60;
+            document.getElementById('txtPlaytime').innerText = `${minutes} minutes ${seconds} seconds`;
         }, 1000);
 
-        function catatAktiviti(kategori) {
-            logAktiviti[kategori] = (logAktiviti[kategori] || 0) + 1;
+        function logActivity(category) {
+            activityLog[category] = (activityLog[category] || 0) + 1;
         }
 
-        function bukaDashboard() {
-            document.getElementById('modalParents').classList.remove('hidden');
+        function openDashboard() {
+            document.getElementById('parentsModal').classList.remove('hidden');
             document.getElementById('parentsGate').classList.remove('hidden');
             document.getElementById('parentsData').classList.add('hidden');
-            document.getElementById('jawapanGate').value = '';
+            document.getElementById('gateAnswer').value = '';
 
             let num1 = Math.floor(Math.random() * 5) + 2;
             let num2 = Math.floor(Math.random() * 4) + 1;
-            targetMatematik = num1 + num2;
-            document.getElementById('soalanMatematik').innerText = `What is ${num1} + ${num2}?`;
+            targetMathAnswer = num1 + num2;
+            document.getElementById('mathQuestion').innerText = `What is ${num1} + ${num2}?`;
         }
 
-        function sahkanParentsGate() {
-            let jawapan = parseInt(document.getElementById('jawapanGate').value);
-            if (jawapan === targetMatematik) {
+        function verifyParentsGate() {
+            let answer = parseInt(document.getElementById('gateAnswer').value);
+            if (answer === targetMathAnswer) {
                 document.getElementById('parentsGate').classList.add('hidden');
                 document.getElementById('parentsData').classList.remove('hidden');
 
-                let list = document.getElementById('listKategori');
+                let list = document.getElementById('categoryList');
                 list.innerHTML = '';
-                let keys = Object.keys(logAktiviti);
+                let keys = Object.keys(activityLog);
                 if(keys.length === 0) {
                     list.innerHTML = '<li>No category explored yet.</li>';
                 } else {
                     keys.forEach(k => {
-                        list.innerHTML += `<li class="capitalize">${k} (${logAktiviti[k]} times)</li>`;
+                        list.innerHTML += `<li class="capitalize">${k} (${activityLog[k]} times)</li>`;
                     });
                 }
             } else {
-                sebutEnglish("Wrong answer. Try again.");
+                speakEnglish("Wrong answer. Try again.");
             }
         }
 
-        function tutupDashboard() {
-            document.getElementById('modalParents').classList.add('hidden');
+        function closeDashboard() {
+            document.getElementById('parentsModal').classList.add('hidden');
         }
 
-        function tukarTema(tema) {
-            document.body.className = `theme-${tema} min-h-screen relative flex flex-col justify-between transition-all duration-500 overflow-hidden`;
+        function changeTheme(theme) {
+            document.body.className = `theme-${theme} min-h-screen relative flex flex-col justify-between transition-all duration-500 overflow-hidden`;
         }
 
         // --- ENGLISH AUDIO ENGINES (WEB SPEECH & REAL SOUND INTEGRATION) ---
-        let audioSemasa = null;
-        function mainkanBunyiSebenar(url) {
-            if (audioSemasa) {
-                audioSemasa.pause();
-                audioSemasa.currentTime = 0;
+        let currentAudio = null;
+        function playRealSound(url) {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
             }
-            audioSemasa = new Audio(url);
-            audioSemasa.play().catch(e => console.log("Audio load held for user interaction click."));
+            currentAudio = new Audio(url);
+            currentAudio.play().catch(e => console.log("Audio load held for user interaction click."));
         }
 
-        function sebutEnglish(text) {
+        function speakEnglish(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 let utterance = new SpeechSynthesisUtterance(text);
@@ -297,230 +297,230 @@
             }
         }
 
-        const senaraiPujian = ["Great job!", "Wonderful!", "Awesome!", "You did it!", "Smart baby!"];
-        function bagiPujianRawak() {
-            let indeks = Math.floor(Math.random() * senaraiPujian.length);
-            sebutEnglish(senaraiPujian[indeks]);
-            cetusZarahGanjaran();
+        const praiseList = ["Great job!", "Wonderful!", "Awesome!", "You did it!", "Smart baby!"];
+        function giveRandomPraise() {
+            let index = Math.floor(Math.random() * praiseList.length);
+            speakEnglish(praiseList[index]);
+            triggerRewardParticles();
         }
 
         // --- MODULE LEARNING DATA BANK ---
-        const dataPembelajaran = {
-            nombor: [
-                { teks: "One", visual: "1️⃣", sub: "🍎" },
-                { teks: "Two", visual: "2️⃣", sub: "🍎🍎" },
-                { teks: "Three", visual: "3️⃣", sub: "🍎🍎🍎" },
-                { teks: "Four", visual: "4️⃣", sub: "🍌🍌🍌🍌" },
-                { teks: "Five", visual: "5️⃣", sub: "🍌🍌🍌🍌🍌" },
-                { teks: "Six", visual: "6️⃣", sub: "🍇🍇🍇🍇🍇🍇" },
-                { teks: "Seven", visual: "7️⃣", sub: "🍇🍇🍇🍇🍇🍇🍇" },
-                { teks: "Eight", visual: "8️⃣", sub: "🍊🍊🍊🍊🍊🍊🍊🍊" },
-                { teks: "Nine", visual: "9️⃣", sub: "🍊🍊🍊🍊🍊🍊🍊🍊🍊" },
-                { teks: "Ten", visual: "🔟", sub: "⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️" }
+        const learningData = {
+            numbers: [
+                { text: "One", visual: "1️⃣", sub: "🍎" },
+                { text: "Two", visual: "2️⃣", sub: "🍎🍎" },
+                { text: "Three", visual: "3️⃣", sub: "🍎🍎🍎" },
+                { text: "Four", visual: "4️⃣", sub: "🍌🍌🍌🍌" },
+                { text: "Five", visual: "5️⃣", sub: "🍌🍌🍌🍌🍌" },
+                { text: "Six", visual: "6️⃣", sub: "🍇🍇🍇🍇🍇🍇" },
+                { text: "Seven", visual: "7️⃣", sub: "🍇🍇🍇🍇🍇🍇🍇" },
+                { text: "Eight", visual: "8️⃣", sub: "🍊🍊🍊🍊🍊🍊🍊🍊" },
+                { text: "Nine", visual: "9️⃣", sub: "🍊🍊🍊🍊🍊🍊🍊🍊🍊" },
+                { text: "Ten", visual: "🔟", sub: "⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️" }
             ],
-            huruf: [
-                { teks: "A for Apple", visual: "A", sub: "🍎" },
-                { teks: "B for Ball", visual: "B", sub: "⚽" },
-                { teks: "C for Cat", visual: "C", sub: "🐱" },
-                { teks: "D for Dog", visual: "D", sub: "🐶" },
-                { teks: "E for Elephant", visual: "E", sub: "🐘" },
-                { teks: "F for Fish", visual: "F", sub: "🐟" },
-                { teks: "G for Grapes", visual: "G", sub: "🍇" },
-                { teks: "H for House", visual: "H", sub: "🏠" },
-                { teks: "I for Ice cream", visual: "I", sub: "🍦" },
-                { teks: "J for Juice", visual: "J", sub: "🧃" },
-                { teks: "K for Kite", visual: "K", sub: "🪁" },
-                { teks: "L for Lion", visual: "L", sub: "🦁" },
-                { teks: "M for Monkey", visual: "M", sub: "🐵" },
-                { teks: "N for Nest", visual: "N", sub: "🪹" },
-                { teks: "O for Orange", visual: "O", sub: "🍊" },
-                { teks: "P for Pen", visual: "P", sub: "🖊️" },
-                { teks: "Q for Queen", visual: "Q", sub: "👑" },
-                { teks: "R for Rabbit", visual: "R", sub: "🐇" },
-                { teks: "S for Sun", visual: "S", sub: "☀️" },
-                { teks: "T for Train", visual: "T", sub: "🚂" },
-                { teks: "U for Umbrella", visual: "U", sub: "☂️" },
-                { teks: "V for Van", visual: "V", sub: "🚐" },
-                { teks: "W for Water", visual: "W", sub: "💧" },
-                { teks: "X for Xylophone", visual: "X", sub: "🎹" },
-                { teks: "Y for Yo-yo", visual: "Y", sub: "🪀" },
-                { teks: "Z for Zebra", visual: "Z", sub: "🦓" }
+            alphabet: [
+                { text: "A for Apple", visual: "A", sub: "🍎" },
+                { text: "B for Ball", visual: "B", sub: "⚽" },
+                { text: "C for Cat", visual: "C", sub: "🐱" },
+                { text: "D for Dog", visual: "D", sub: "🐶" },
+                { text: "E for Elephant", visual: "E", sub: "🐘" },
+                { text: "F for Fish", visual: "F", sub: "🐟" },
+                { text: "G for Grapes", visual: "G", sub: "🍇" },
+                { text: "H for House", visual: "H", sub: "🏠" },
+                { text: "I for Ice cream", visual: "I", sub: "🍦" },
+                { text: "J for Juice", visual: "J", sub: "🧃" },
+                { text: "K for Kite", visual: "K", sub: "🪁" },
+                { text: "L for Lion", visual: "L", sub: "🦁" },
+                { text: "M for Monkey", visual: "M", sub: "🐵" },
+                { text: "N for Nest", visual: "N", sub: "🪹" },
+                { text: "O for Orange", visual: "O", sub: "🍊" },
+                { text: "P for Pen", visual: "P", sub: "🖊️" },
+                { text: "Q for Queen", visual: "Q", sub: "👑" },
+                { text: "R for Rabbit", visual: "R", sub: "🐇" },
+                { text: "S for Sun", visual: "S", sub: "☀️" },
+                { text: "T for Train", visual: "T", sub: "🚂" },
+                { text: "U for Umbrella", visual: "U", sub: "☂️" },
+                { text: "V for Van", visual: "V", sub: "🚐" },
+                { text: "W for Water", visual: "W", sub: "💧" },
+                { text: "X for Xylophone", visual: "X", sub: "🎹" },
+                { text: "Y for Yo-yo", visual: "Y", sub: "🪀" },
+                { text: "Z for Zebra", visual: "Z", sub: "🦓" }
             ],
-            bentuk: [
-                { teks: "Circle", visual: "⚪" },
-                { teks: "Square", visual: "⬜" },
-                { teks: "Triangle", visual: "🔺" },
-                { teks: "Star", visual: "⭐" },
-                { teks: "Heart", visual: "❤️" }
+            shapes: [
+                { text: "Circle", visual: "⚪" },
+                { text: "Square", visual: "⬜" },
+                { text: "Triangle", visual: "🔺" },
+                { text: "Star", visual: "⭐" },
+                { text: "Heart", visual: "❤️" }
             ],
-            haiwan: [
-                { teks: "Cat", visual: "🐱", realSound: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat-meow3.mp3" },
-                { teks: "Dog", visual: "🐶", realSound: "https://upload.wikimedia.org/wikipedia/commons/b/b5/Domestic_dog_barking.ogg" },
-                { teks: "Cow", visual: "🐮", realSound: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Cow_moo.ogg" },
-                { teks: "Rooster", visual: "🐔", realSound: "https://upload.wikimedia.org/wikipedia/commons/5/52/Rooster_crowing_close_up.ogg" },
-                { teks: "Elephant", visual: "🐘", realSound: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Elephant_Trumpet.ogg" },
-                { teks: "Lion", visual: "🦁", realSound: "https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_roar.ogg" }
+            animals: [
+                { text: "Cat", visual: "🐱", realSound: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat-meow3.mp3" },
+                { text: "Dog", visual: "🐶", realSound: "https://upload.wikimedia.org/wikipedia/commons/b/b5/Domestic_dog_barking.ogg" },
+                { text: "Cow", visual: "🐮", realSound: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Cow_moo.ogg" },
+                { text: "Rooster", visual: "🐔", realSound: "https://upload.wikimedia.org/wikipedia/commons/5/52/Rooster_crowing_close_up.ogg" },
+                { text: "Elephant", visual: "🐘", realSound: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Elephant_Trumpet.ogg" },
+                { text: "Lion", visual: "🦁", realSound: "https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_roar.ogg" }
             ],
-            buah: [
-                { teks: "Apple", visual: "🍎" },
-                { teks: "Banana", visual: "🍌" },
-                { teks: "Watermelon", visual: "🍉" },
-                { teks: "Grapes", visual: "🍇" },
-                { teks: "Mango", visual: "🥭" },
-                { teks: "Orange", visual: "🍊" }
+            fruits: [
+                { text: "Apple", visual: "🍎" },
+                { text: "Banana", visual: "🍌" },
+                { text: "Watermelon", visual: "🍉" },
+                { text: "Grapes", visual: "🍇" },
+                { text: "Mango", visual: "🥭" },
+                { text: "Orange", visual: "🍊" }
             ],
-            kenderaan: [
-                { teks: "Car", visual: "🚗", realSound: "https://upload.wikimedia.org/wikipedia/commons/3/30/Car_horn_sound.wav" },
-                { teks: "Train", visual: "🚂", realSound: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Steam_train_whistle.ogg" },
-                { teks: "Airplane", visual: "✈️", realSound: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Jet_flyby.ogg" }
+            vehicles: [
+                { text: "Car", visual: "🚗", realSound: "https://upload.wikimedia.org/wikipedia/commons/3/30/Car_horn_sound.wav" },
+                { text: "Train", visual: "🚂", realSound: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Steam_train_whistle.ogg" },
+                { text: "Airplane", visual: "✈️", realSound: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Jet_flyby.ogg" }
             ],
-            keluarga: [
-                { teks: "Father", visual: "👨" },
-                { teks: "Mother", visual: "👩" },
-                { teks: "Baby", visual: "👶" },
-                { teks: "Brother", visual: "👦" },
-                { teks: "Sister", visual: "👧" }
+            family: [
+                { text: "Father", visual: "👨" },
+                { text: "Mother", visual: "👩" },
+                { text: "Baby", visual: "👶" },
+                { text: "Brother", visual: "👦" },
+                { text: "Sister", visual: "👧" }
             ]
         };
 
-        let modSemasa = '';
-        let indeksSemasa = 0;
+        let currentMode = '';
+        let currentIndex = 0;
 
-        function tukarSkrin(idSkrin) {
-            document.getElementById('skrinUtama').classList.add('hidden');
-            document.getElementById('menuPembelajaran').classList.add('hidden');
-            document.getElementById('skrinModPermainan').classList.add('hidden');
-            document.getElementById(idSkrin).classList.remove('hidden');
-            if(idSkrin === 'menuPembelajaran') {
-                sebutEnglish("Let's pick a game!");
+        function changeScreen(screenId) {
+            document.getElementById('mainScreen').classList.add('hidden');
+            document.getElementById('learningMenu').classList.add('hidden');
+            document.getElementById('gameModeScreen').classList.add('hidden');
+            document.getElementById(screenId).classList.remove('hidden');
+            if(screenId === 'learningMenu') {
+                speakEnglish("Let's pick a game!");
             }
         }
 
-        function kembaliKeMenu() {
-            tukarSkrin('menuPembelajaran');
-            matikanModKhas();
+        function backToMenu() {
+            changeScreen('learningMenu');
+            disableSpecialMode();
         }
 
-        function bukaMod(kategori) {
-            modSemasa = kategori;
-            indeksSemasa = 0;
-            catatAktiviti(kategori);
+        function openMode(category) {
+            currentMode = category;
+            currentIndex = 0;
+            logActivity(category);
             
-            tukarSkrin('skrinModPermainan');
-            document.getElementById('navigasiMod').classList.remove('hidden');
-            document.getElementById('butangSeterusnyaPangil').classList.remove('hidden');
+            changeScreen('gameModeScreen');
+            document.getElementById('modeNavigation').classList.remove('hidden');
+            document.getElementById('navButtonsContainer').classList.remove('hidden');
 
-            setupButangNavigasi();
-            binaKandunganMod();
+            setupNavigationButtons();
+            buildModeContent();
         }
 
-        function setupButangNavigasi() {
-            const btnKiri = document.getElementById('btnKiri');
-            const btnKanan = document.getElementById('btnKanan');
+        function setupNavigationButtons() {
+            const btnLeft = document.getElementById('btnLeft');
+            const btnRight = document.getElementById('btnRight');
 
-            btnKiri.onclick = () => {
-                if (indeksSemasa > 0) {
-                    indeksSemasa--;
-                    binaKandunganMod();
+            btnLeft.onclick = () => {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    buildModeContent();
                 }
             };
 
-            btnKanan.onclick = () => {
-                let max = dataPembelajaran[modSemasa] ? dataPembelajaran[modSemasa].length : 1;
-                if (indeksSemasa < max - 1) {
-                    indeksSemasa++;
-                    binaKandunganMod();
+            btnRight.onclick = () => {
+                let max = learningData[currentMode] ? learningData[currentMode].length : 1;
+                if (currentIndex < max - 1) {
+                    currentIndex++;
+                    buildModeContent();
                 } else {
-                    bagiPujianRawak();
-                    setTimeout(() => kembaliKeMenu(), 1200);
+                    giveRandomPraise();
+                    setTimeout(() => backToMenu(), 1200);
                 }
             };
         }
 
-        function binaKandunganMod() {
-            const area = document.getElementById('kandunganMod');
+        function buildModeContent() {
+            const area = document.getElementById('modeContent');
             area.innerHTML = '';
             
-            if (dataPembelajaran[modSemasa]) {
-                let item = dataPembelajaran[modSemasa][indeksSemasa];
-                let subElemen = item.sub ? `<div class="text-4xl tracking-widest mt-6">${item.sub}</div>` : '';
+            if (learningData[currentMode]) {
+                let item = learningData[currentMode][currentIndex];
+                let subElement = item.sub ? `<div class="text-4xl tracking-widest mt-6">${item.sub}</div>` : '';
                 
-                // Voice triggered logically based on requirement
+                // Real animal sound / vehicle sound or standard TTS English text
                 if (item.realSound) {
-                    mainkanBunyiSebenar(item.realSound);
+                    playRealSound(item.realSound);
                 } else {
-                    sebutEnglish(item.teks);
+                    speakEnglish(item.text);
                 }
 
                 area.innerHTML = `
-                    <div onclick="responSentuh(this, ${item.realSound ? `'${item.realSound}'` : 'null'}, '${item.realSound ? '' : item.teks}')" class="cursor-pointer p-8 rounded-full bg-white shadow-md hover:shadow-xl inline-block transform transition active:scale-95">
+                    <div onclick="touchResponse(this, ${item.realSound ? `'${item.realSound}'` : 'null'}, '${item.realSound ? '' : item.text}')" class="cursor-pointer p-8 rounded-full bg-white shadow-md hover:shadow-xl inline-block transform transition active:scale-95">
                         <div class="text-8xl md:text-9xl bounce-soft select-none">${item.visual}</div>
                     </div>
-                    <h3 class="text-5xl font-black text-slate-700 mt-6">${item.teks}</h3>
-                    ${subElemen}
+                    <h3 class="text-5xl font-black text-slate-700 mt-6">${item.text}</h3>
+                    ${subElement}
                     <p class="text-sm font-bold text-teal-600 mt-3">👉 Tap image to play sound again!</p>
                 `;
             } 
-            else if (modSemasa === 'warna') {
-                document.getElementById('butangSeterusnyaPangil').classList.add('hidden');
-                const senaraiWarna = [
-                    { nama: "Red", hex: "#ef4444" },
-                    { nama: "Blue", hex: "#3b82f6" },
-                    { nama: "Green", hex: "#22c55e" },
-                    { nama: "Yellow", hex: "#eab308" },
-                    { nama: "Purple", hex: "#a855f7" },
-                    { nama: "Orange", hex: "#f97316" }
+            else if (currentMode === 'colors') {
+                document.getElementById('navButtonsContainer').classList.add('hidden');
+                const colorsList = [
+                    { name: "Red", hex: "#ef4444" },
+                    { name: "Blue", hex: "#3b82f6" },
+                    { name: "Green", hex: "#22c55e" },
+                    { name: "Yellow", hex: "#eab308" },
+                    { name: "Purple", hex: "#a855f7" },
+                    { name: "Orange", hex: "#f97316" }
                 ];
                 
-                let warnaSasaran = senaraiWarna[Math.floor(Math.random() * senaraiWarna.length)];
-                sebutEnglish(`Touch the color ${warnaSasaran.nama}`);
+                let targetColor = colorsList[Math.floor(Math.random() * colorsList.length)];
+                speakEnglish(`Touch the color ${targetColor.name}`);
 
                 area.innerHTML = `
-                    <h3 class="text-3xl font-black text-slate-700 mb-6">Touch the color: <span class="text-indigo-600 underline">${warnaSasaran.nama}</span></h3>
+                    <h3 class="text-3xl font-black text-slate-700 mb-6">Touch the color: <span class="text-indigo-600 underline">${targetColor.name}</span></h3>
                     <div class="grid grid-cols-3 gap-6 w-full max-w-md">
-                        ${senaraiWarna.map(w => `
-                            <button onclick="semakWarna('${w.nama}', '${warnaSasaran.nama}')" class="w-24 h-24 rounded-3xl shadow-lg cursor-pointer transform active:scale-90 transition-transform" style="background-color: ${w.hex}"></button>
+                        ${colorsList.map(c => `
+                            <button onclick="checkColor('${c.name}', '${targetColor.name}')" class="w-24 h-24 rounded-3xl shadow-lg cursor-pointer transform active:scale-90 transition-transform" style="background-color: ${c.hex}"></button>
                         `).join('')}
                     </div>
                 `;
             }
-            else if (modSemasa === 'tepuk') {
-                document.getElementById('navigasiMod').classList.add('hidden');
-                sebutEnglish("Tap and pop the bubbles!");
+            else if (currentMode === 'bubbles') {
+                document.getElementById('modeNavigation').classList.add('hidden');
+                speakEnglish("Tap and pop the bubbles!");
                 area.innerHTML = `
                     <div class="absolute inset-0 bg-sky-50/50 rounded-3xl overflow-hidden cursor-crosshair">
                         <canvas id="gameCanvas" class="w-full h-full"></canvas>
-                        <button onclick="kembaliKeMenu()" class="absolute top-4 left-4 bg-gray-600/80 text-white font-bold py-2 px-4 rounded-xl text-sm z-50">🛑 Leave</button>
+                        <button onclick="backToMenu()" class="absolute top-4 left-4 bg-gray-600/80 text-white font-bold py-2 px-4 rounded-xl text-sm z-50">🛑 Leave</button>
                     </div>
                 `;
-                mulakanGameTepukBuih();
+                startBubbleGame();
             }
         }
 
-        function responSentuh(el, realSoundUrl, englishText) {
+        function touchResponse(el, realSoundUrl, englishText) {
             el.classList.add('jump-active');
             setTimeout(() => el.classList.remove('jump-active'), 500);
-            cetusZarahGanjaran();
+            triggerRewardParticles();
             
             if(realSoundUrl) {
-                mainkanBunyiSebenar(realSoundUrl);
+                playRealSound(realSoundUrl);
             } else if (englishText) {
-                sebutEnglish(englishText);
+                speakEnglish(englishText);
             }
         }
 
-        function semakWarna(pilihan, betul) {
-            if (pilihan === betul) {
-                bagiPujianRawak();
-                setTimeout(() => binaKandunganMod(), 1500);
+        function checkColor(choice, correct) {
+            if (choice === correct) {
+                giveRandomPraise();
+                setTimeout(() => buildModeContent(), 1500);
             } else {
-                sebutEnglish("Try again!");
+                speakEnglish("Try again!");
             }
         }
 
         // --- BUBBLE POPPING CANVAS GAME ---
         let gameLoopId = null;
-        function mulakanGameTepukBuih() {
+        function startBubbleGame() {
             const canvas = document.getElementById('gameCanvas');
             if(!canvas) return;
             const ctx = canvas.getContext('2d');
@@ -528,8 +528,8 @@
             canvas.width = rect.width || 600;
             canvas.height = rect.height || 400;
 
-            let buihList = [];
-            class Buih {
+            let bubbleList = [];
+            class Bubble {
                 constructor() {
                     this.x = Math.random() * canvas.width;
                     this.y = canvas.height + Math.random() * 50;
@@ -555,49 +555,49 @@
                 }
             }
 
-            for(let i=0; i<6; i++) buihList.push(new Buih());
+            for(let i=0; i<6; i++) bubbleList.push(new Bubble());
 
-            function lariLoop() {
+            function runLoop() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                buihList.forEach(b => { b.update(); b.draw(); });
-                gameLoopId = requestAnimationFrame(lariLoop);
+                bubbleList.forEach(b => { b.update(); b.draw(); });
+                gameLoopId = requestAnimationFrame(runLoop);
             }
-            gameLoopId = requestAnimationFrame(lariLoop);
+            gameLoopId = requestAnimationFrame(runLoop);
 
             canvas.addEventListener('click', function(e) {
                 const cRect = canvas.getBoundingClientRect();
-                const klikX = e.clientX - cRect.left;
-                const klikY = e.clientY - cRect.top;
+                const clickX = e.clientX - cRect.left;
+                const clickY = e.clientY - cRect.top;
 
-                buihList.forEach((b, indeks) => {
-                    let jarak = Math.hypot(b.x - klikX, b.y - klikY);
-                    if(jarak < b.radius) {
-                        buihList[indeks] = new Buih();
-                        sebutEnglish("Pop!");
-                        cetusZarahGanjaran(e.clientX, e.clientY);
+                bubbleList.forEach((b, index) => {
+                    let dist = Math.hypot(b.x - clickX, b.y - clickY);
+                    if(dist < b.radius) {
+                        bubbleList[index] = new Bubble();
+                        speakEnglish("Pop!");
+                        triggerRewardParticles(e.clientX, e.clientY);
                     }
                 });
             });
         }
 
-        function matikanModKhas() {
+        function disableSpecialMode() {
             if(gameLoopId) { cancelAnimationFrame(gameLoopId); gameLoopId = null; }
-            if(audioSemasa) { audioSemasa.pause(); }
+            if(currentAudio) { currentAudio.pause(); }
         }
 
         // --- PARTICLE REWARD ENGINE ---
-        const canvasGanjaran = document.getElementById('rewardCanvas');
-        const ctxGanjaran = canvasGanjaran.getContext('2d');
-        let senaraiZarah = [];
+        const rewardCanvas = document.getElementById('rewardCanvas');
+        const ctxReward = rewardCanvas.getContext('2d');
+        let particleList = [];
 
-        function setSaizCanvasGanjaran() {
-            canvasGanjaran.width = window.innerWidth;
-            canvasGanjaran.height = window.innerHeight;
+        function setRewardCanvasSize() {
+            rewardCanvas.width = window.innerWidth;
+            rewardCanvas.height = window.innerHeight;
         }
-        window.addEventListener('resize', setSaizCanvasGanjaran);
-        setSaizCanvasGanjaran();
+        window.addEventListener('resize', setRewardCanvasSize);
+        setRewardCanvasSize();
 
-        class Zarah {
+        class Particle {
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
@@ -615,32 +615,32 @@
                 this.alpha -= 0.02;
             }
             draw() {
-                ctxGanjaran.save();
-                ctxGanjaran.globalAlpha = this.alpha;
-                ctxGanjaran.fillStyle = this.color;
-                ctxGanjaran.beginPath();
-                ctxGanjaran.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctxGanjaran.fill();
-                ctxGanjaran.restore();
+                ctxReward.save();
+                ctxReward.globalAlpha = this.alpha;
+                ctxReward.fillStyle = this.color;
+                ctxReward.beginPath();
+                ctxReward.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctxReward.fill();
+                ctxReward.restore();
             }
         }
 
-        function cetusZarahGanjaran(x, y) {
+        function triggerRewardParticles(x, y) {
             let pX = x || window.innerWidth / 2;
             let pY = y || window.innerHeight / 2;
-            for(let i=0; i<25; i++) senaraiZarah.push(new Zarah(pX, pY));
+            for(let i=0; i<25; i++) particleList.push(new Particle(pX, pY));
         }
 
-        function updateAnimasiZarah() {
-            ctxGanjaran.clearRect(0, 0, canvasGanjaran.width, canvasGanjaran.height);
-            senaraiZarah.forEach((z, indeks) => {
-                z.update();
-                z.draw();
-                if(z.alpha <= 0) senaraiZarah.splice(indeks, 1);
+        function updateParticleAnimation() {
+            ctxReward.clearRect(0, 0, rewardCanvas.width, rewardCanvas.height);
+            particleList.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if(p.alpha <= 0) particleList.splice(index, 1);
             });
-            requestAnimationFrame(updateAnimasiZarah);
+            requestAnimationFrame(updateParticleAnimation);
         }
-        requestAnimationFrame(updateAnimasiZarah);
+        requestAnimationFrame(updateParticleAnimation);
     </script>
 </body>
 </html>
