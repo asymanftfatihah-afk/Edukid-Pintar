@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Edukids Pintar - Belajar & Bermain</title>
+    <!-- Tailwind CSS untuk UI Ceria -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Font Awesome untuk Ikon Comel -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase App & Database (V9 Compatibility) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Bubbler One', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+        }
+        .bounce-soft {
+            animation: bounceSoft 3s infinite ease-in-out;
+        }
+        @keyframes bounceSoft {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+        .float-cloud {
+            animation: floatCloud 20s infinite linear;
+        }
+        @keyframes floatCloud {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+        .spin-slow {
+            animation: spinSlow 12s infinite linear;
+        }
+        @keyframes spinSlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .pulse-star {
+            animation: pulseStar 1.5s infinite ease-in-out;
+        }
+        @keyframes pulseStar {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+        }
+        /* Tema Warna Dinamik */
+        .tema-pelangi { background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); }
+        .tema-laut { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%); }
+        .tema-hutan { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); }
+        .tema-angkasa { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: white; }
+        
+        /* Elemen melompat apabila disentuh */
+        .jump-active {
+            animation: jumpEffect 0.5s ease-out;
+        }
+        @keyframes jumpEffect {
+            0%, 100% { transform: scale(1) translateY(0); }
+            50% { transform: scale(0.9) translateY(-40px); }
+        }
+    </style>
+</head>
+<body class="tema-pelangi min-h-screen relative flex flex-col justify-between transition-all duration-500 overflow-hidden">
+
+    <!-- Canvas Ganjaran Zarah (Konfeti / Bintang / Buih) -->
+    <canvas id="rewardCanvas" class="absolute inset-0 pointer-events-none z-50"></canvas>
+
+    <!-- KAWASAN UTAMA UTK SKRIN/MOD -->
+    <main class="flex-grow flex items-center justify-center p-4 w-full relative">
+
+        <!-- 1. SKRIN UTAMA -->
+        <div id="skrinUtama" class="text-center w-full max-w-xl">
+            <!-- Elemen Hiasan Bergerak -->
+            <div class="absolute top-10 left-1/4 opacity-30 float-cloud pointer-events-none">
+                <i class="fa-solid fa-cloud text-6xl text-white"></i>
+            </div>
+            <div class="absolute top-8 right-10 text-yellow-400 text-5xl spin-slow pointer-events-none">
+                <i class="fa-solid fa-sun text-yellow-400"></i>
+            </div>
+            
+            <div class="space-y-8">
+                <div class="bounce-soft inline-block">
+                    <h1 class="text-5xl md:text-6xl font-black text-amber-500 drop-shadow-lg tracking-wide">
+                        🌈 Edukids Pintar
+                    </h1>
+                    <p class="text-xl font-bold text-sky-600 mt-2">Belajar & Bermain Sambil Tersenyum! 😊</p>
+                </div>
+
+                <div class="flex justify-center gap-4 text-amber-400 text-3xl pulse-star">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star text-4xl text-pink-400"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+
+                <!-- Butang Gergasi Mula -->
+                <button onclick="tukarSkrin('menuPembelajaran')" class="w-72 h-72 mx-auto bg-emerald-400 hover:bg-emerald-500 text-white rounded-full font-black text-4xl shadow-2xl border-8 border-white flex flex-col items-center justify-center cursor-pointer transition transform active:scale-95 duration-200">
+                    <i class="fa-solid fa-play text-6xl mb-3 drop-shadow"></i>
+                    <span>MULA</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. MENU PEMBELAJARAN -->
+        <div id="menuPembelajaran" class="hidden w-full max-w-4xl mx-auto">
+            <h2 class="text-3xl font-black text-center text-indigo-600 mb-6 drop-shadow-sm">Pilih Permainan Seronok ✨</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                <!-- Nombor -->
+                <button onclick="bukaMod('nombor')" class="bg-rose-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">🔢</span> Kenal Nombor
+                </button>
+                <!-- Huruf -->
+                <button onclick="bukaMod('huruf')" class="bg-sky-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">🔤</span> Kenal Huruf
+                </button>
+                <!-- Warna -->
+                <button onclick="bukaMod('warna')" class="bg-amber-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">🎨</span> Warna
+                </button>
+                <!-- Bentuk -->
+                <button onclick="bukaMod('bentuk')" class="bg-purple-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">🔺</span> Bentuk
+                </button>
+                <!-- Haiwan -->
+                <button onclick="bukaMod('haiwan')" class="bg-teal-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">🐶</span> Haiwan
+                </button>
+                <!-- Buah -->
+                <button onclick="bukaMod('buah')" class="bg-orange-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">🍎</span> Buah
+                </button>
+                <!-- Kenderaan -->
+                <button onclick="bukaMod('kenderaan')" class="bg-indigo-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">🚗</span> Kenderaan
+                </button>
+                <!-- Keluarga -->
+                <button onclick="bukaMod('keluarga')" class="bg-pink-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">👨‍👩‍👧</span> Keluarga
+                </button>
+                <!-- Mod Bunyi -->
+                <button onclick="bukaMod('bunyi')" class="bg-violet-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">🎵</span> Teka Bunyi
+                </button>
+                <!-- Tepuk Sentuh -->
+                <button onclick="bukaMod('tepuk')" class="bg-lime-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
+                    <span class="text-5xl">👏</span> Tepuk Buih
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTAINER UNTUK MOD PERMAINAN AKTIF -->
+        <div id="skrinModPermainan" class="hidden w-full max-w-3xl mx-auto bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-2xl border-4 border-white min-h-[450px] flex flex-col justify-between items-center relative">
+            
+            <!-- Kandungan Dinamik Dipasang Di Sini -->
+            <div id="kandunganMod" class="w-full flex-grow flex flex-col items-center justify-center text-center"></div>
+
+            <!-- Butang Navigasi Bawah Mod -->
+            <div id="navigasiMod" class="w-full flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+                <button onclick="kembaliKeMenu()" class="bg-gray-400 text-white font-bold py-3 px-6 rounded-2xl shadow active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-home mr-2"></i> Menu
+                </button>
+                <div id="butangSeterusnyaPangil" class="flex gap-2">
+                    <button id="btnKiri" class="bg-indigo-400 text-white font-bold p-4 rounded-2xl shadow active:scale-95 text-xl cursor-pointer">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <button id="btnKanan" class="bg-indigo-400 text-white font-bold p-4 rounded-2xl shadow active:scale-95 text-xl cursor-pointer">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. DASHBOARD IBU BAPA (POPUP MODAL) -->
+        <div id="modalParents" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border-4 border-amber-400 relative">
+                
+                <!-- Pagar Pengesahan Matematik (Security Gate) -->
+                <div id="parentsGate">
+                    <h3 class="text-2xl font-black text-amber-600 mb-4 text-center">Zon Ibu Bapa 🔐</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">Sila selesaikan soalan ini untuk masuk:</p>
+                    <div class="bg-amber-50 p-4 rounded-2xl text-center font-bold text-xl mb-4 text-gray-700" id="soalanMatematik"></div>
+                    <input type="number" id="jawapanGate" class="w-full border-2 border-amber-300 p-3 rounded-xl text-center text-xl mb-4 font-bold outline-none focus:border-amber-500" placeholder="Jawapan anda">
+                    <div class="flex gap-2">
+                        <button onclick="tutupDashboard()" class="w-1/2 bg-gray-400 text-white py-3 rounded-xl font-bold cursor-pointer">Batal</button>
+                        <button onclick="sahkanParentsGate()" class="w-1/2 bg-amber-500 text-white py-3 rounded-xl font-bold cursor-pointer">Masuk</button>
+                    </div>
+                </div>
+
+                <!-- Kandungan Laporan Sebenar -->
+                <div id="parentsData" class="hidden space-y-4 text-gray-800">
+                    <h3 class="text-2xl font-black text-indigo-600 border-b pb-2">Laporan Prestasi Edukids</h3>
+                    <div>
+                        <p class="font-bold text-gray-500 text-sm uppercase">⏱️ Tempoh Bermain Sesi Ini</p>
+                        <p id="txtMasaBermain" class="text-3xl font-black text-emerald-500">0 minit 0 saat</p>
+                    </div>
+                    <div>
+                        <p class="font-bold text-gray-500 text-sm uppercase">📊 Kategori Diterokai</p>
+                        <ul id="listKategori" class="list-disc list-inside mt-1 font-semibold text-gray-700"></ul>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                        <p class="font-bold text-blue-700 text-sm">💡 Cadangan Aktiviti Seterusnya:</p>
+                        <p id="txtCadangan" class="text-sm mt-1 text-blue-900"></p>
+                    </div>
+                    <button onclick="tutupDashboard()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-center cursor-pointer mt-4">Tutup Laporan</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER NAV / PANEL KAWALAN -->
+    <footer class="p-4 flex justify-between items-center w-full z-40 bg-white/20 backdrop-blur-xs">
+        <!-- Tukar Tema -->
+        <div class="flex gap-2 bg-white/60 p-2 rounded-2xl shadow-md">
+            <button onclick="tukarTema('pelangi')" title="Tema Pelangi" class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-300 to-sky-300 border border-white cursor-pointer transform active:scale-95"></button>
+            <button onclick="tukarTema('laut')" title="Tema Laut" class="w-8 h-8 rounded-full bg-sky-400 border border-white cursor-pointer transform active:scale-95"></button>
+            <button onclick="tukarTema('hutan')" title="Tema Hutan" class="w-8 h-8 rounded-full bg-emerald-400 border border-white cursor-pointer transform active:scale-95"></button>
+            <button onclick="tukarTema('angkasa')" title="Tema Angkasa" class="w-8 h-8 rounded-full bg-indigo-950 border border-white cursor-pointer transform active:scale-95"></button>
+        </div>
+
+        <!-- Butang Ibu Bapa -->
+        <button onclick="bukaDashboard()" class="bg-amber-400 hover:bg-amber-500 text-white font-black py-2 px-4 rounded-2xl shadow border-2 border-white flex items-center gap-2 text-sm cursor-pointer transition transform active:scale-95">
+            <i class="fa-solid fa-user-lock"></i> Ibu Bapa
+        </button>
+    </footer>
+
+    <!-- Audio Efek Alternatif Tempatan Menggunakan AudioContext -->
+    <script>
+        // Konfigurasi Firebase Anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEnIM_ZN5qeHAS-6I8bTcQumTTRla_keA",
+            authDomain: "edukids-pintar-c382f.firebaseapp.com",
+            databaseURL: "https://edukids-pintar-c382f-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "edukids-pintar-c382f",
+            storageBucket: "edukids-pintar-c382f.firebasestorage.app",
+            messagingSenderId: "787682994225",
+            appId: "1:787682994225:web:ca20eea9008a9054b90d10"
+        };
+        
+        // Inisialisasi Firebase secara selamat jika fail dijalankan dalam persekitaran yang disokong
+        let database = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+        } catch (e) {
+            console.warn("Firebase tidak dapat dimuatkan secara penuh (mungkin dijalankan secara offline/lokal). Mod fallback diaktifkan.", e);
+        }
+
+        // --- SISTEM PEMANTAUAN MASA (PARENTS DASHBOARD) ---
+        let masaMula = Date.now();
+        let logAktiviti = {};
+        let targetMatematik = 0;
+
+        setInterval(() => {
+            // Mengira masa aktif bermain
+            let bezaMasa = Math.floor((Date.now() - masaMula) / 1000);
+            let minit = Math.floor(bezaMasa / 60);
+            let saat = bezaMasa % 60;
+            document.getElementById('txtMasaBermain').innerText = `${minit} minit ${saat} saat`;
+            
+            // Hantar kemajuan ke Firebase secara berkala jika ada sambungan
+            if (database) {
+                database.ref('analitik_sesi/bermain').set({
+                    durasi_saat: bezaMasa,
+                    kategori_diterokai: Object.keys(logAktiviti),
+                    kemaskini_terakhir: new Date().toISOString()
+                });
+            }
+        }, 1000);
+
+        function catatAktiviti(kategori) {
+            logAktiviti[kategori] = (logAktiviti[kategori] || 0) + 1;
+        }
+
+        function bukaDashboard() {
+            document.getElementById('modalParents').classList.remove('hidden');
+            document.getElementById('parentsGate').classList.remove('hidden');
+            document.getElementById('parentsData').classList.add('hidden');
+            document.getElementById('jawapanGate').value = '';
+
+            // Bina soalan matematik rawak
+            let num1 = Math.floor(Math.random() * 5) + 2;
+            let num2 = Math.floor(Math.random() * 4) + 1;
+            targetMatematik = num1 + num2;
+            document.getElementById('soalanMatematik').innerText = `Berapakah ${num1} + ${num2}?`;
+        }
+
+        function sahkanParentsGate() {
+            let jawapan = parseInt(document.getElementById('jawapanGate').value);
+            if (jawapan === targetMatematik) {
+                document.getElementById('parentsGate').classList.add('hidden');
+                document.getElementById('parentsData').classList.remove('hidden');
+
+                // Papar aktiviti terpilih
+                let list = document.getElementById('listKategori');
+                list.innerHTML = '';
+                let keys = Object.keys(logAktiviti);
+                if(keys.length === 0) {
+                    list.innerHTML = '<li>Belum ada kategori dimainkan lagi.</li>';
+                } else {
+                    keys.forEach(k => {
+                        list.innerHTML += `<li class="capitalize">${k} (${logAktiviti[k]} kali)</li>`;
+                    });
+                }
+
+                // Jana cadangan pintar
+                let cadangan = "Kanak-kanak sedang aktif meneroka! Cuba luangkan masa bersamanya meneka nama objek di persekitaran rumah untuk mengukuhkan memori pendengarannya.";
+                if(logAktiviti['warna'] > logAktiviti['nombor']) {
+                    cadangan = "Anak anda menunjukkan minat tinggi pada Warna! Seterusnya, ajak dia mengumpulkan mainan mengikut kumpulan warna di ruang tamu.";
+                } else if(logAktiviti['tepuk'] > 0) {
+                    cadangan = "Mod Tepuk Buih membantu motor halus. Bagus! Imbangi dengan aktiviti memicit doh mainan (playdough) bersama-sama.";
+                }
+                document.getElementById('txtCadangan').innerText = cadangan;
+            } else {
+                sebutSuara("Salah, cuba lagi ibu bapa.");
+                alert("Jawapan salah! Sila cuba lagi.");
+            }
+        }
+
+        function tutupDashboard() {
+            document.getElementById('modalParents').classList.add('hidden');
+        }
+
+        function tukarTema(tema) {
+            document.body.className = `tema-${tema} min-h-screen relative flex flex-col justify-between transition-all duration-500 overflow-hidden`;
+        }
+
+        // --- ENJIN SUARA & PUJIAN (WEB SPEECH API) ---
+        function sebutSuara(teks) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Hentikan sebutan lama jika ada
+                let sebutan = new SpeechSynthesisUtterance(teks);
+                sebutan.lang = 'ms-MY'; // Set Bahasa Melayu
+                sebutan.rate = 0.9;     // Kelajuan perlahan sedikit untuk kefahaman budak 2 tahun
+                sebutan.pitch = 1.2;    // Nada sedikit tinggi agar kedengaran ceria
+                window.speechSynthesis.speak(sebutan);
+            }
+        }
+
+        const senaraiPujian = ["Bagus!", "Pandainya!", "Hebat!", "Syabas!", "Bijak sekali!"];
+        function bagiPujianRawak() {
+            let indeks = Math.floor(Math.random() * senaraiPujian.length);
+            sebutSuara(senaraiPujian[indeks]);
+            cetusZarahGanjaran();
+        }
+
+
+        // --- LOGIK PERMAINAN DAN MOD ---
+        let modSemasa = '';
+        let indeksSemasa = 0;
+        let dataMod = [];
+
+        // Bank Data Pembelajaran
+        const dataPembelajaran = {
+            nombor: [
+                { teks: "Satu", visual: "1️⃣", sub: "🍎" },
+                { teks: "Dua", visual: "2️⃣", sub: "🍎🍎" },
+                { teks: "Tiga", visual: "3️⃣", sub: "🍎🍎🍎" },
+                { teks: "Empat", visual: "4️⃣", sub: "🍌🍌🍌🍌" },
+                { teks: "Lima", visual: "5️⃣", sub: "🍌🍌🍌🍌🍌" },
+                { teks: "Enam", visual: "6️⃣", sub: "🍇🍇🍇🍇🍇🍇" },
+                { teks: "Tujuh", visual: "7️⃣", sub: "🍇🍇🍇🍇🍇🍇🍇" },
+                { teks: "Lapan", visual: "8️⃣", sub: "🍊🍊🍊🍊🍊🍊🍊🍊" },
+                { teks: "Sembilan", visual: "9️⃣", sub: "🍊🍊🍊🍊🍊🍊🍊🍊🍊" },
+                { teks: "Sepuluh", visual: "🔟", sub: "⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️" }
+            ],
+            huruf: [
+                { teks: "A untuk Ayam", visual: "A", sub: "🐔" },
+                { teks: "B untuk Baju", visual: "B", sub: "👕" },
+                { teks: "C untuk Cawan", visual: "C", sub: "☕" },
+                { teks: "D先行 untuk Daun", teksMS: "D untuk Daun", visual: "D", sub: "🍃" },
+                { teks: "E untuk Epal", visual: "E", sub: "🍎" },
+                { teks: "F untuk Feri", visual: "F", sub: "🛳️" },
+                { teks: "G untuk Gajah", visual: "G", sub: "🐘" },
+                { teks: "H untuk Harimau", visual: "H", sub: "🐯" },
+                { teks: "I untuk Ikan", visual: "I", sub: "🐟" },
+                { teks: "J untuk Jam", visual: "J", sub: "⏰" },
+                { teks: "K untuk Kucing", visual: "K", sub: "🐱" },
+                { teks: "L untuk Lembu", visual: "L", sub: "🐮" },
+                { teks: "M untuk Monyet", visual: "M", sub: "🐵" },
+                { teks: "N untuk Nanas", visual: "N", sub: "🍍" },
+                { teks: "O untuk Oren", visual: "O", sub: "🍊" },
+                { teks: "P untuk Pisang", visual: "P", sub: "🍌" },
+                { teks: "Q untuk Quran", visual: "Q", sub: "📖" },
+                { teks: "R untuk Rumah", visual: "R", sub: "🏠" },
+                { teks: "S untuk Singa", visual: "S", sub: "🦁" },
+                { teks: "T untuk Tembikai", visual: "T", sub: "🍉" },
+                { teks: "U untuk Ular", visual: "U", sub: "🐍" },
+                { teks: "V untuk Van", visual: "V", sub: "🚐" },
+                { teks: "W untuk Wau", visual: "W", sub: "🪁" },
+                { teks: "X untuk Xilofon", visual: "X", sub: "🎹" },
+                { teks: "Y untuk Yoyo", visual: "Y", sub: "🪀" },
+                { teks: "Z untuk Zip", visual: "Z", sub: "🤐" }
+            ],
+            bentuk: [
+                { teks: "Bulat", visual: "⚪", cls: "bg-gray-100 text-gray-400" },
+                { teks: "Segi Empat", visual: "⬜", cls: "bg-gray-100 text-gray-600" },
+                { teks: "Segi Tiga", visual: "🔺", cls: "" },
+                { teks: "Bintang", visual: "⭐", cls: "" },
+                { teks: "Hati", visual: "❤️", cls: "" }
+            ],
+            haiwan: [
+                { teks: "Kucing", visual: "🐱", bunyi: "Meow! Meow!" },
+                { teks: "Anjing", visual: "🐶", bunyi: "Woof! Woof!" },
+                { teks: "Lembu", visual: "🐮", bunyi: "Mooo!" },
+                { teks: "Ayam", visual: "🐔", bunyi: "Kok kok keeok!" },
+                { teks: "Gajah", visual: "🐘", bunyi: "Preettt!" },
+                { teks: "Singa", visual: "🦁", bunyi: "Roarrr!" },
+                { teks: "Monyet", visual: "🐵", bunyi: "Uk uk ak ak!" },
+                { teks: "Ikan", visual: "🐟", bunyi: "Blub blub!" }
+            ],
+            buah: [
+                { teks: "Epal", visual: "🍎" },
+                { teks: "Pisang", visual: "🍌" },
+                { teks: "Tembikai", visual: "🍉" },
+                { teks: "Anggur", visual: "🍇" },
+                { teks: "Mangga", visual: "🥭" },
+                { teks: "Oren", visual: "🍊" }
+            ],
+            kenderaan: [
+                { teks: "Kereta", visual: "🚗", bunyi: "Vroom vroom!" },
+                { teks: "Bas", visual: "🚌", bunyi: "Pon pon!" },
+                { teks: "Bomba", visual: "🚒", bunyi: "Nee nor nee nor!" },
+                { teks: "Ambulans", visual: "🚑", bunyi: "Wiu wiu wiu!" },
+                { teks: "Kapal Terbang", visual: "✈️", bunyi: "Swoosh!" },
+                { teks: "Kereta Api", visual: "🚂", bunyi: "Choo choo!" }
+            ],
+            keluarga: [
+                { teks: "Ayah", visual: "👨" },
+                { teks: "Ibu", visual: "👩" },
+                { teks: "Adik", visual: "👶" },
+                { teks: "Abang", visual: "👦" },
+                { teks: "Kakak", visual: "👧" },
+                { teks: "Datuk", visual: "👴" },
+                { teks: "Nenek", visual: "👵" }
+            ]
+        };
+
+        function tukarSkrin(idSkrin) {
+            document.getElementById('skrinUtama').classList.add('hidden');
+            document.getElementById('menuPembelajaran').classList.add('hidden');
+            document.getElementById('skrinModPermainan').classList.add('hidden');
+
+            document.getElementById(idSkrin).classList.remove('hidden');
+            
+            if(idSkrin === 'menuPembelajaran') {
+                sebutSuara("Jom pilih permainan!");
+            }
+        }
+
+        function kembaliKeMenu() {
+            tukarSkrin('menuPembelajaran');
+            matikanModKhas();
+        }
+
+        function bukaMod(kategori) {
+            modSemasa = kategori;
+            indeksSemasa = 0;
+            catatAktiviti(kategori);
+            
+            document.getElementById('skrinMenuUtama')?.classList.add('hidden'); 
+            tukarSkrin('skrinModPermainan');
+            
+            // Set butang navigasi kiri kanan lalai paparan
+            document.getElementById('navigasiMod').classList.remove('hidden');
+            document.getElementById('butangSeterusnyaPangil').classList.remove('hidden');
+
+            setupButangNavigasi();
+            binaKandunganMod();
+        }
+
+        function setupButangNavigasi() {
+            const btnKiri = document.getElementById('btnKiri');
+            const btnKanan = document.getElementById('btnKanan');
+
+            btnKiri.onclick = () => {
+                if (indeksSemasa > 0) {
+                    indeksSemasa--;
+                    binaKandunganMod();
+                }
+            };
+
+            btnKanan.onclick = () => {
+                // Bergantung pada saiz bank data
+                let max = dataPembelajaran[modSemasa] ? dataPembelajaran[modSemasa].length : 1;
+                if (indeksSemasa < max - 1) {
+                    indeksSemasa++;
+                    binaKandunganMod();
+                } else {
+                    bagiPujianRawak();
+                    kembaliKeMenu();
+                }
+            };
+        }
+
+        function binaKandunganMod() {
+            const area = document.getElementById('kandunganMod');
+            area.innerHTML = '';
+            
+            // Mengendalikan Mod Pembelajaran Standard (Nombor, Huruf, Bentuk, Haiwan, Buah, Kenderaan, Keluarga)
+            if (dataPembelajaran[modSemasa]) {
+                let item = dataPembelajaran[modSemasa][indeksSemasa];
+                
+                let tajukTeks = item.teksMS || item.teks;
+                sebutSuara(tajukTeks);
+
+                let subElemen = item.sub ? `<div class="text-3xl tracking-widest mt-6">${item.sub}</div>` : '';
+                let labelBunyi = item.bunyi ? `<div class="text-sm text-gray-400 mt-2 font-mono">${item.bunyi}</div>` : '';
+
+                area.innerHTML = `
+                    <div onclick="responElemenSentuh(this, '${item.teks}', '${item.bunyi || ''}')" class="cursor-pointer p-8 rounded-full bg-white shadow-md hover:shadow-xl inline-block transform transition active:scale-95">
+                        <div class="text-8xl md:text-9xl bounce-soft select-none">${item.visual}</div>
+                    </div>
+                    <h3 class="text-4xl font-black text-slate-700 mt-6">${item.teks}</h3>
+                    ${subElemen}
+                    ${labelBunyi}
+                `;
+            } 
+            // Mod Interaktif Khas 1: WARNA
+            else if (modSemasa === 'warna') {
+                document.getElementById('butangSeterusnyaPangil').classList.add('hidden');
+                
+                const senaraiWarna = [
+                    { nama: "Merah", hex: "#ef4444" },
+                    { nama: "Biru", hex: "#3b82f6" },
+                    { nama: "Hijau", hex: "#22c55e" },
+                    { nama: "Kuning", hex: "#eab308" },
+                    { nama: "Putih", hex: "#ffffff", border: "border-2 border-gray-300" },
+                    { nama: "Hitam", hex: "#1e293b" },
+                    { nama: "Ungu", hex: "#a855f7" },
+                    { nama: "Oren", hex: "#f97316" }
+                ];
+                
+                // Pilih satu warna sasaran rawak
+                let warnaSasaran = senaraiWarna[Math.floor(Math.random() * senaraiWarna.length)];
+                sebutSuara(`Sentuh warna ${warnaSasaran.nama}`);
+
+                area.innerHTML = `
+                    <h3 class="text-3xl font-black text-slate-700 mb-6">Sentuh warna <span class="text-indigo-600 underline">${warnaSasaran.nama}</span></h3>
+                    <div class="grid grid-cols-4 gap-4 w-full max-w-md">
+                        ${senaraiWarna.map(w => `
+                            <button onclick="semakJawapanWarna('${w.nama}', '${warnaSasaran.nama}')" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl shadow-md cursor-pointer ${w.border || ''} transform active:scale-90 transition-transform" style="background-color: ${w.hex}"></button>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            // Mod Interaktif Khas 2: TEKA BUNYI
+            else if (modSemasa === 'bunyi') {
+                document.getElementById('butangSeterusnyaPangil').classList.add('hidden');
+                
+                const senaraiBunyi = [
+                    { nama: "Kucing", ikon: "🐱", bunyiSebutan: "Bunyi Meow Meow. Yang mana satu kucing?" },
+                    { nama: "Anjing", ikon: "🐶", bunyiSebutan: "Bunyi Guk Guk. Yang mana satu anjing?" },
+                    { nama: "Lembu", ikon: "🐮", bunyiSebutan: "Bunyi Mooo. Yang mana satu lembu?" },
+                    { nama: "Ayam", ikon: "🐔", bunyiSebutan: "Bunyi Kok kok keeok. Yang mana satu ayam?" },
+                    { nama: "Kereta Api", ikon: "🚂", bunyiSebutan: "Bunyi Choo choo! Yang mana satu kereta api?" },
+                    { nama: "Ambulans", ikon: "🚑", bunyiSebutan: "Bunyi Wiu wiu wiu. Yang mana satu ambulans?" }
+                ];
+
+                let sasaran = senaraiBunyi[Math.floor(Math.random() * senaraiBunyi.length)];
+                sebutSuara(sasaran.bunyiSebutan);
+
+                // Ambil 2 pengacau rawak
+                let senaraiPilihan = [sasaran];
+                while(senaraiPilihan.length < 3) {
+                    let rawak = senaraiBunyi[Math.floor(Math.random() * senaraiBunyi.length)];
+                    if(!senaraiPilihan.find(p => p.nama === rawak.nama)) {
+                        senaraiPilihan.push(rawak);
+                    }
+                }
+                // Susun semula rawak (Shuffle)
+                senaraiPilihan.sort(() => Math.random() - 0.5);
+
+                area.innerHTML = `
+                    <h3 class="text-2xl font-black text-slate-700 mb-8">Dengar dan Teka Gambar Sesuai 🌟</h3>
+                    <div class="flex justify-center gap-6">
+                        ${senaraiPilihan.map(p => `
+                            <button onclick="semakJawapanBunyi('${p.nama}', '${sasaran.nama}')" class="bg-amber-100 border-4 border-white shadow-xl w-24 h-24 rounded-3xl text-5xl flex items-center justify-center transform active:scale-90 transition cursor-pointer">
+                                ${p.ikon}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <button onclick="sebutSuara('${sasaran.bunyiSebutan}')" class="mt-8 bg-sky-400 text-white font-bold py-2 px-6 rounded-full text-sm shadow">🗣️ Main Semula Bunyi</button>
+                `;
+            }
+            // Mod Interaktif Khas 3: TEPUK & SENTUH (CANVAS GAMEPLAY)
+            else if (modSemasa === 'tepuk') {
+                document.getElementById('navigasiMod').classList.add('hidden');
+                sebutSuara("Tepuk dan pecahkan buih sabun di skrin!");
+                
+                area.innerHTML = `
+                    <div class="absolute inset-0 bg-sky-50/50 rounded-3xl overflow-hidden cursor-crosshair">
+                        <canvas id="gameCanvas" class="w-full h-full"></canvas>
+                        <button onclick="kembaliKeMenu()" class="absolute top-4 left-4 bg-gray-600/80 text-white font-bold py-2 px-4 rounded-xl text-sm z-50">
+                            <i class="fa-solid fa-home"></i> Keluar
+                        </button>
+                        <div class="absolute bottom-4 right-4 text-xs font-bold text-slate-400 pointer-events-none">Sentuh buih untuk meletup!</div>
+                    </div>
+                `;
+                mulakanGameTepukBuih();
+            }
+        }
+
+        function responElemenSentuh(el, teks, kesanBunyi) {
+            el.classList.add('jump-active');
+            setTimeout(() => el.classList.remove('jump-active'), 500);
+
+            cetusZarahGanjaran();
+
+            if (kesanBunyi) {
+                sebutSuara(`${teks}. Bunyinya... ${kesanBunyi}`);
+            } else {
+                sebutSuara(teks);
+            }
+        }
+
+        function semakJawapanWarna(pilihan, betul) {
+            if (pilihan === betul) {
+                bagiPujianRawak();
+                setTimeout(() => binaKandunganMod(), 1500);
+            } else {
+                sebutSuara("Cuba lagi sayang.");
+            }
+        }
+
+        function semakJawapanBunyi(pilihan, betul) {
+            if (pilihan === betul) {
+                bagiPujianRawak();
+                setTimeout(() => binaKandunganMod(), 1500);
+            } else {
+                sebutSuara("Bukan yang itu, cuba lagi.");
+            }
+        }
+
+
+        // --- LOGIK GAMEPLAY CANVAS (TEPUK BUIH SABUN) ---
+        let gameLoopId = null;
+        function mulakanGameTepukBuih() {
+            const canvas = document.getElementById('gameCanvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            // Set saiz canvas mengikut resolusi elemen induk
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width || 600;
+            canvas.height = rect.height || 400;
+
+            let buihList = [];
+
+            class Buih {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = canvas.height + Math.random() * 50;
+                    this.radius = Math.random() * 25 + 25; // Bersaiz besar untuk budak kecil
+                    this.speed = Math.random() * 1.5 + 0.5;
+                    this.color = `hsla(${Math.random() * 360}, 80%, 70%, 0.6)`;
+                }
+                update() {
+                    this.y -= this.speed;
+                    if(this.y + this.radius < 0) {
+                        this.y = canvas.height + this.radius;
+                        this.x = Math.random() * canvas.width;
+                    }
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.stroke();
+                    
+                    // Kilauan buih
+                    ctx.beginPath();
+                    ctx.arc(this.x - this.radius/3, this.y - this.radius/3, this.radius/5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                    ctx.fill();
+                }
+            }
+
+            for(let i=0; i<8; i++) {
+                buihList.push(new Buih());
+            }
+
+            function lariLoop() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                buihList.forEach(b => {
+                    b.update();
+                    b.draw();
+                });
+                gameLoopId = requestAnimationFrame(lariLoop);
+            }
+            gameLoopId = requestAnimationFrame(lariLoop);
+
+            // Handler sentuhan/klik untuk meletupkan buih
+            canvas.addEventListener('click', function(e) {
+                const cRect = canvas.getBoundingClientRect();
+                const klikX = e.clientX - cRect.left;
+                const klikY = e.clientY - cRect.top;
+
+                buihList.forEach((b, indeks) => {
+                    let jarak = Math.hypot(b.x - klikX, b.y - klikY);
+                    if(jarak < b.radius) {
+                        // Buih pecah!
+                        buihList[indeks] = new Buih(); // Ganti buih baru
+                        sebutSuara("Pop!");
+                        cetusZarahGanjaran(e.clientX, e.clientY);
+                    }
+                });
+            });
+        }
+
+        function matikanModKhas() {
+            if(gameLoopId) {
+                cancelAnimationFrame(gameLoopId);
+                gameLoopId = null;
+            }
+        }
+
+
+        // --- EFEK SISTEM ZARAH KANVAS (CONFETTI GANJARAN) ---
+        const canvasGanjaran = document.getElementById('rewardCanvas');
+        const ctxGanjaran = canvasGanjaran.getContext('2d');
+        let senaraiZarah = [];
+
+        function setSaizCanvasGanjaran() {
+            canvasGanjaran.width = window.innerWidth;
+            canvasGanjaran.height = window.innerHeight;
+        }
+        window.addEventListener('resize', setSaizCanvasGanjaran);
+        setSaizCanvasGanjaran();
+
+        class Zarah {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 12 + 6;
+                this.speedX = Math.random() * 6 - 3;
+                this.speedY = Math.random() * -6 - 2;
+                this.gravity = 0.15;
+                this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                this.alpha = 1;
+            }
+            update() {
+                this.speedY += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= 0.015;
+            }
+            draw() {
+                ctxGanjaran.save();
+                ctxGanjaran.globalAlpha = this.alpha;
+                ctxGanjaran.fillStyle = this.color;
+                ctxGanjaran.beginPath();
+                // Lukis bintang mudah atau segi empat kecil konfeti
+                ctxGanjaran.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctxGanjaran.fill();
+                ctxGanjaran.restore();
+            }
+        }
+
+        function cetusZarahGanjaran(x, y) {
+            let pX = x || window.innerWidth / 2;
+            let pY = y || window.innerHeight / 2;
+            
+            for(let i=0; i<30; i++) {
+                senaraiZarah.push(new Zarah(pX, pY));
+            }
+        }
+
+        function updateAnimasiZarah() {
+            ctxGanjaran.clearRect(0, 0, canvasGanjaran.width, canvasGanjaran.height);
+            senaraiZarah.forEach((z, indeks) => {
+                z.update();
+                z.draw();
+                if(z.alpha <= 0) {
+                    senaraiZarah.splice(indeks, 1);
+                }
+            });
+            requestAnimationFrame(updateAnimasiZarah);
+        }
+        requestAnimationFrame(updateAnimasiZarah);
+
+    </script>
+</body>
+</html>
