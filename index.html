@@ -59,6 +59,11 @@
             0%, 100% { transform: scale(1) translateY(0); }
             50% { transform: scale(0.9) translateY(-40px); }
         }
+
+        /* Timer Circle Animation */
+        .timer-circle {
+            transition: stroke-dashoffset 10s linear;
+        }
     </style>
 </head>
 <body class="theme-rainbow min-h-screen relative flex flex-col justify-between transition-all duration-500 overflow-hidden">
@@ -127,7 +132,11 @@
                 <button onclick="openMode('family')" class="bg-pink-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer">
                     <span class="text-5xl">👨‍👩‍👧</span> Family
                 </button>
-                <button onclick="openMode('bubbles')" class="bg-lime-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer col-span-2 md:col-span-4">
+                <!-- WHAT IS THIS RANDOM GAME MODE -->
+                <button onclick="openMode('guess')" class="bg-amber-500 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer col-span-2">
+                    <span class="text-5xl">❓</span> What is this?
+                </button>
+                <button onclick="openMode('bubbles')" class="bg-lime-400 p-6 rounded-3xl text-white font-black text-xl shadow-lg border-4 border-white flex flex-col items-center gap-3 transform active:scale-95 transition cursor-pointer col-span-2">
                     <span class="text-5xl">👏</span> Pop Bubbles Game
                 </button>
             </div>
@@ -278,32 +287,42 @@
         // --- ENGLISH AUDIO ENGINES (WEB SPEECH & REAL SOUND INTEGRATION) ---
         let currentAudio = null;
 
-        function playRealSound(url, fallbackText) {
+        function playRealSound(url, fallbackText, callback) {
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
             }
             
-            // First speak the name of the animal/vehicle clearly
             speakEnglish(fallbackText);
             
-            // Then overlay the real sound after a very short delay
             setTimeout(() => {
                 currentAudio = new Audio(url);
-                currentAudio.play().catch(e => {
-                    console.log("Audio stream blocked or failed, using Voice text fallback instead.");
-                });
+                currentAudio.play()
+                    .then(() => {
+                        if (callback) {
+                            currentAudio.onended = callback;
+                        }
+                    })
+                    .catch(e => {
+                        console.log("Audio stream blocked or failed, using Voice text fallback instead.");
+                        if (callback) setTimeout(callback, 1500);
+                    });
             }, 800);
         }
 
-        function speakEnglish(text) {
+        function speakEnglish(text, callback) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 let utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
                 utterance.rate = 0.85; 
                 utterance.pitch = 1.3;
+                if (callback) {
+                    utterance.onend = callback;
+                }
                 window.speechSynthesis.speak(utterance);
+            } else {
+                if (callback) setTimeout(callback, 1000);
             }
         }
 
@@ -315,7 +334,6 @@
         }
 
         // --- MODULE LEARNING DATA BANK ---
-        // Sound URLs updated to highly reliable, permanent open-source direct .mp3 repositories
         const learningData = {
             numbers: [
                 { text: "One", visual: "1️⃣", sub: "🍎" },
@@ -396,6 +414,8 @@
 
         let currentMode = '';
         let currentIndex = 0;
+        let guessItemsList = [];
+        let guessTimer = null;
 
         function changeScreen(screenId) {
             document.getElementById('mainScreen').classList.add('hidden');
@@ -421,8 +441,30 @@
             document.getElementById('modeNavigation').classList.remove('hidden');
             document.getElementById('navButtonsContainer').classList.remove('hidden');
 
+            if (category === 'guess') {
+                generateGuessQuestions();
+            }
+
             setupNavigationButtons();
             buildModeContent();
+        }
+
+        // --- GENERATE 20 RANDOM QUESTIONS FOR WHAT IS THIS MODE ---
+        function generateGuessQuestions() {
+            let pool = [];
+            // Gather items from Numbers, Alphabet, Animals, Vehicles, and Fruits
+            const sources = ['numbers', 'alphabet', 'animals', 'vehicles', 'fruits'];
+            sources.forEach(src => {
+                if (learningData[src]) {
+                    learningData[src].forEach(item => {
+                        pool.push({ ...item, category: src });
+                    });
+                }
+            });
+
+            // Shuffle pool and select exactly 20 items
+            pool.sort(() => Math.random() - 0.5);
+            guessItemsList = pool.slice(0, 20);
         }
 
         function setupNavigationButtons() {
@@ -437,7 +479,7 @@
             };
 
             btnRight.onclick = () => {
-                let max = learningData[currentMode] ? learningData[currentMode].length : 1;
+                let max = currentMode === 'guess' ? guessItemsList.length : (learningData[currentMode] ? learningData[currentMode].length : 1);
                 if (currentIndex < max - 1) {
                     currentIndex++;
                     buildModeContent();
@@ -449,10 +491,52 @@
         }
 
         function buildModeContent() {
+            // Reset existing active audios or timers
+            disableSpecialMode();
+            
             const area = document.getElementById('modeContent');
             area.innerHTML = '';
             
-            if (learningData[currentMode]) {
+            // --- HANDLER FOR "WHAT IS THIS?" MODE ---
+            if (currentMode === 'guess') {
+                let item = guessItemsList[currentIndex];
+                
+                area.innerHTML = `
+                    <div class="relative w-48 h-48 flex items-center justify-center mb-4">
+                        <!-- Custom SVG circular countdown timer -->
+                        <svg class="absolute w-full h-full transform -rotate-90">
+                            <circle cx="96" cy="96" r="80" stroke="#f3f4f6" stroke-width="12" fill="transparent" />
+                            <circle id="timerStroke" cx="96" cy="96" r="80" stroke="#f59e0b" stroke-width="12" fill="transparent" 
+                                    stroke-dasharray="502" stroke-dashoffset="0" class="timer-circle" />
+                        </svg>
+                        <div id="guessVisual" class="text-7xl md:text-8xl select-none z-10 transition duration-300 opacity-20 filter blur-xs">❓</div>
+                    </div>
+                    <h3 id="guessLabel" class="text-4xl font-black text-slate-400">Guess what this is! 🤔</h3>
+                    <div id="praiseContainer" class="hidden mt-4 text-3xl font-black text-emerald-500 bounce-soft">✨ PERFECT! ✨</div>
+                    <p class="text-sm font-bold text-slate-500 mt-6">Question ${currentIndex + 1} of 20</p>
+                `;
+
+                // Speak "What is this?" first
+                speakEnglish("What is this?", () => {
+                    // Start 10 seconds countdown
+                    const timerStroke = document.getElementById('timerStroke');
+                    if (timerStroke) {
+                        // Triggers the CSS transition-all over 10s
+                        timerStroke.style.strokeDashoffset = "502";
+                    }
+
+                    let secondsLeft = 10;
+                    guessTimer = setInterval(() => {
+                        secondsLeft--;
+                        if (secondsLeft <= 0) {
+                            clearInterval(guessTimer);
+                            revealGuessAnswer(item);
+                        }
+                    }, 1000);
+                });
+            } 
+            // --- HANDLER FOR NORMAL MODULES ---
+            else if (learningData[currentMode]) {
                 let item = learningData[currentMode][currentIndex];
                 let subElement = item.sub ? `<div class="text-4xl tracking-widest mt-6">${item.sub}</div>` : '';
                 
@@ -505,6 +589,43 @@
                 `;
                 startBubbleGame();
             }
+        }
+
+        // --- REVEAL GUESS ANSWER AND TRIGGER VOICE/AUDIO ---
+        function revealGuessAnswer(item) {
+            const visualDiv = document.getElementById('guessVisual');
+            const labelEl = document.getElementById('guessLabel');
+            const praiseEl = document.getElementById('praiseContainer');
+
+            if(visualDiv && labelEl && praiseEl) {
+                // Reveal visual clearly
+                visualDiv.innerHTML = item.visual;
+                visualDiv.classList.remove('opacity-20', 'blur-xs');
+                visualDiv.classList.add('scale-110');
+                
+                // Show core text label
+                labelEl.innerText = item.text;
+                labelEl.classList.remove('text-slate-400');
+                labelEl.classList.add('text-indigo-600');
+
+                // If animals or vehicles, play real sound. Else use Text to Speech sebutan.
+                if (item.realSound) {
+                    playRealSound(item.realSound, item.text, () => {
+                        // After the sound plays, trigger perfect and particles
+                        triggerPerfectMoment(praiseEl);
+                    });
+                } else {
+                    speakEnglish(item.text, () => {
+                        triggerPerfectMoment(praiseEl);
+                    });
+                }
+            }
+        }
+
+        function triggerPerfectMoment(praiseEl) {
+            praiseEl.classList.remove('hidden');
+            speakEnglish("Perfect!");
+            triggerRewardParticles();
         }
 
         function touchResponse(el, realSoundUrl, englishText) {
@@ -591,8 +712,10 @@
         }
 
         function disableSpecialMode() {
-            if(gameLoopId) { cancelAnimationFrame(gameLoopId); gameLoopId = null; }
-            if(currentAudio) { currentAudio.pause(); }
+            if (gameLoopId) { cancelAnimationFrame(gameLoopId); gameLoopId = null; }
+            if (currentAudio) { currentAudio.pause(); }
+            if (guessTimer) { clearInterval(guessTimer); guessTimer = null; }
+            window.speechSynthesis.cancel();
         }
 
         // --- PARTICLE REWARD ENGINE ---
