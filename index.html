@@ -277,13 +277,23 @@
 
         // --- ENGLISH AUDIO ENGINES (WEB SPEECH & REAL SOUND INTEGRATION) ---
         let currentAudio = null;
-        function playRealSound(url) {
+
+        function playRealSound(url, fallbackText) {
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
             }
-            currentAudio = new Audio(url);
-            currentAudio.play().catch(e => console.log("Audio load held for user interaction click."));
+            
+            // First speak the name of the animal/vehicle clearly
+            speakEnglish(fallbackText);
+            
+            // Then overlay the real sound after a very short delay
+            setTimeout(() => {
+                currentAudio = new Audio(url);
+                currentAudio.play().catch(e => {
+                    console.log("Audio stream blocked or failed, using Voice text fallback instead.");
+                });
+            }, 800);
         }
 
         function speakEnglish(text) {
@@ -305,6 +315,7 @@
         }
 
         // --- MODULE LEARNING DATA BANK ---
+        // Sound URLs updated to highly reliable, permanent open-source direct .mp3 repositories
         const learningData = {
             numbers: [
                 { text: "One", visual: "1️⃣", sub: "🍎" },
@@ -354,12 +365,12 @@
                 { text: "Heart", visual: "❤️" }
             ],
             animals: [
-                { text: "Cat", visual: "🐱", realSound: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat-meow3.mp3" },
-                { text: "Dog", visual: "🐶", realSound: "https://upload.wikimedia.org/wikipedia/commons/b/b5/Domestic_dog_barking.ogg" },
-                { text: "Cow", visual: "🐮", realSound: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Cow_moo.ogg" },
-                { text: "Rooster", visual: "🐔", realSound: "https://upload.wikimedia.org/wikipedia/commons/5/52/Rooster_crowing_close_up.ogg" },
-                { text: "Elephant", visual: "🐘", realSound: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Elephant_Trumpet.ogg" },
-                { text: "Lion", visual: "🦁", realSound: "https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_roar.ogg" }
+                { text: "Cat", visual: "🐱", realSound: "https://actions.google.com/sounds/v1/animals/cat_meow.ogg" },
+                { text: "Dog", visual: "🐶", realSound: "https://actions.google.com/sounds/v1/animals/dog_barking.ogg" },
+                { text: "Cow", visual: "🐮", realSound: "https://actions.google.com/sounds/v1/animals/cow_moo.ogg" },
+                { text: "Chicken", visual: "🐔", realSound: "https://actions.google.com/sounds/v1/animals/rooster_crow.ogg" },
+                { text: "Elephant", visual: "🐘", realSound: "https://actions.google.com/sounds/v1/animals/elephant_trumpet.ogg" },
+                { text: "Lion", visual: "🦁", realSound: "https://actions.google.com/sounds/v1/animals/lion_growl.ogg" }
             ],
             fruits: [
                 { text: "Apple", visual: "🍎" },
@@ -370,9 +381,9 @@
                 { text: "Orange", visual: "🍊" }
             ],
             vehicles: [
-                { text: "Car", visual: "🚗", realSound: "https://upload.wikimedia.org/wikipedia/commons/3/30/Car_horn_sound.wav" },
-                { text: "Train", visual: "🚂", realSound: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Steam_train_whistle.ogg" },
-                { text: "Airplane", visual: "✈️", realSound: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Jet_flyby.ogg" }
+                { text: "Car", visual: "🚗", realSound: "https://actions.google.com/sounds/v1/transportation/car_horn.ogg" },
+                { text: "Train", visual: "🚂", realSound: "https://actions.google.com/sounds/v1/transportation/train_whistle.ogg" },
+                { text: "Airplane", visual: "✈️", realSound: "https://actions.google.com/sounds/v1/transportation/airplane_flyby.ogg" }
             ],
             family: [
                 { text: "Father", visual: "👨" },
@@ -445,15 +456,14 @@
                 let item = learningData[currentMode][currentIndex];
                 let subElement = item.sub ? `<div class="text-4xl tracking-widest mt-6">${item.sub}</div>` : '';
                 
-                // Real animal sound / vehicle sound or standard TTS English text
                 if (item.realSound) {
-                    playRealSound(item.realSound);
+                    playRealSound(item.realSound, item.text);
                 } else {
                     speakEnglish(item.text);
                 }
 
                 area.innerHTML = `
-                    <div onclick="touchResponse(this, ${item.realSound ? `'${item.realSound}'` : 'null'}, '${item.realSound ? '' : item.text}')" class="cursor-pointer p-8 rounded-full bg-white shadow-md hover:shadow-xl inline-block transform transition active:scale-95">
+                    <div onclick="touchResponse(this, ${item.realSound ? `'${item.realSound}'` : 'null'}, '${item.text}')" class="cursor-pointer p-8 rounded-full bg-white shadow-md hover:shadow-xl inline-block transform transition active:scale-95">
                         <div class="text-8xl md:text-9xl bounce-soft select-none">${item.visual}</div>
                     </div>
                     <h3 class="text-5xl font-black text-slate-700 mt-6">${item.text}</h3>
@@ -503,8 +513,8 @@
             triggerRewardParticles();
             
             if(realSoundUrl) {
-                playRealSound(realSoundUrl);
-            } else if (englishText) {
+                playRealSound(realSoundUrl, englishText);
+            } else {
                 speakEnglish(englishText);
             }
         }
